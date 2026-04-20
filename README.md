@@ -21,20 +21,46 @@
 
 
 
-## 项目结构
+## 安装方式
+
+### OpenClaw / ClawHub（推荐）
+```bash
+# 一键安装（安装后是完整文件夹，含 SKILL.md 和 scripts/）
+clawhub install musk-eeg
+
+# 数据库文件需单独下载（ClawHub 有文件大小限制）
+# 从 https://github.com/yhongm/Musk-EEG/releases 下载 knowledge_new_fixed.db.zip
+# 放入 skills/musk-eeg/data/ 目录
+```
+
+### GitHub 克隆（推荐完整版）
+```bash
+git clone https://github.com/yhongm/Musk-EEG.git
+# 克隆后是完整项目文件夹，包含 data/ 数据库，无需额外操作
+```
+
+### Claude Code / Hermes Agent
+**整文件夹安装**，不是单个文件：
+1. 将 `Musk-EEG` 文件夹拷贝到 agents 的 skills 目录
+2. 文件夹结构：`skills/musk-eeg/SKILL.md`、`skills/musk-eeg/scripts/`、`skills/musk-eeg/data/`
+3. agents 会自动扫描文件夹并加载 `SKILL.md` 触发技能
+
+---
+
+## 项目结构（完整版）
 
 ```
-musk-eeg/
+Musk-EEG/                           # 整个文件夹作为技能目录
+├── SKILL.md                        # 技能触发文件（必需）
 ├── README.md
-├── SKILL.md                        # Claude Code / Hermes skill 触发文件
 ├── LICENSE
 ├── scripts/
-│   └── musk_eeg_search.py          # 检索脚本（基于相对路径）
+│   └── musk_eeg_search.py          # 检索脚本（基于相对路径向上查找 data/）
 └── data/
-    └── knowledge_new_fixed.db.zip  # 随仓库发布，首次自动解压
+    └── knowledge_new_fixed.db.zip  # 知识库（5,300+ Wikipedia 词条，29MB）
 ```
 
-脚本通过相对于自身位置的路径查找 `data/`，所以从任意工作目录运行都能正常工作。
+安装后应保留完整文件夹结构。脚本通过相对于自身位置的路径查找 `data/`，所以从任意工作目录运行都能正常工作。
 
 ---
 

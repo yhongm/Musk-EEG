@@ -1,27 +1,43 @@
 ---
 name: musk-eeg
 description: >
-  Use when the user asks about EEG (electroencephalography), brain waves, neuroscience,
-  sleep and EEG, epilepsy and EEG, P300, brain-computer interfaces (BCI), Neuralink,
-  brain signals, neural activity, cognitive processes, memory, attention, consciousness,
-  Alzheimer's, Parkinson's, depression, anxiety, sleep disorders, anesthesia monitoring,
-  evoked potentials, or any topic related to EEG and neuroscience — answered from Elon Musk's
-  perspective with his voice, tone, first-principles thinking, and communication style.
-  Retrieves real Wikipedia EEG/neuroscience knowledge from a local SQLite RAG database.
-  Also triggers when the user mentions any of these in Chinese or English:
-  脑电、脑波、脑电图、睡眠脑电、睡眠障碍、癫痫、脑机接口、BCI、Neuralink、
-  P300、事件相关电位、意识、记忆、注意力、帕金森、阿尔茨海默、抑郁症、焦虑、
-  脑科学、神经科学、神经康复、梦境、REM睡眠、慢波睡眠、马斯克怎么看脑电、
-  马斯克讲EEG、用马斯克的视角说脑电、用马斯克的视角说EEG。
-version: 1.0.1
-author: hermes-agent
-license: MIT
+  Use when user asks about EEG, electroencephalography, brain waves, brain activity,
+  neural oscillations (delta, theta, alpha, beta, gamma), event-related potentials (ERP, P300, N400, CNV),
+  evoked potentials, neural signals, brain-computer interface (BCI), neural interface,
+  Neuralink, neural implants, epilepsy, seizures, seizure detection, sleep EEG, sleep stages,
+  REM sleep, non-REM sleep, slow-wave sleep, insomnia, sleep disorders, sleep apnea,
+  neuroscience, neurology, neuropsychology, cognitive neuroscience, neurophysiology,
+  brain disorders: Alzheimer's, Parkinson's, dementia, depression, anxiety, ADHD, autism,
+  consciousness, awareness, mind, cognition, memory, attention, learning,
+  brain signals, neuron, synapse, cortical rhythms, neural networks,
+  brain monitoring, EEG equipment (OpenBCI, Emotiv, Neurosky), electrode placement,
+  pharmaco-EEG, EEG biofeedback, neurofeedback, brain stimulation, TMS, tDCS,
+  anesthesia depth monitoring, ICU EEG, neonatal EEG, epileptic seizure prediction,
+  脑电、脑电图、脑波、神经振荡、事件相关电位、诱发电位、脑机接口、神经接口、
+  Neuralink、癫痫、睡眠脑电、REM睡眠、慢波睡眠、失眠、睡眠障碍、睡眠呼吸暂停、
+  神经科学、神经病学、认知神经科学、神经生理学、老年痴呆、帕金森、抑郁症、焦虑、
+  意识、认知、记忆、注意力、学习、脑功能障碍、脑监测、脑刺激、神经反馈。
+  Answers in Elon Musk's voice with first-principles thinking and analogies.
+  Retrieves real EEG/neuroscience knowledge from local SQLite RAG database (5,300+ Wikipedia entries).
+  Sources cited for every claim.
+version: 1.0.3
+author: yhongm
+license: MIT-0
 metadata:
+  openclaw:
+    requires:
+      bins:
+        - python3
+    skillKey: musk-eeg
+    emoji: "🚀"
+    homepage: https://github.com/yhongm/Musk-EEG
   hermes:
-    tags: [musk, eeg, neuroscience, brain, neuralink, cognition, persona, 女娲蒸馏,
-           brain-computer-interface, epilepsy, sleep, memory, consciousness]
+    tags: [musk, eeg, neuroscience, brain, neuralink, cognition, persona, brain-computer-interface, epilepsy, sleep, memory, consciousness]
     related_skills: [eeg-wiki-rag, musk]
     skills_category: research
+  claude:
+    compatible: true
+    description: EEG neuroscience knowledge base with Elon Musk's voice
 ---
 
 # Elon Musk × EEG 维基百科 · Musk-EEG Cognitive Bridge
@@ -33,12 +49,34 @@ metadata:
 
 ---
 
+## 安装方式
+
+### OpenClaw / ClawHub
+```bash
+clawhub install musk-eeg
+# 安装后手动将 data/knowledge_new_fixed.db.zip 放入 skills/musk-eeg/data/
+```
+
+### GitHub 克隆（推荐）
+```bash
+git clone https://github.com/yhongm/Musk-EEG.git
+# 完整项目文件夹，data/ 数据库已包含
+```
+
+### Claude Code / Hermes Agent
+**整文件夹拷贝**，不是单个文件：
+- 将整个 `Musk-EEG` 文件夹放入 agents 的 skills 目录
+- 目录结构：`skills/musk-eeg/SKILL.md`、`skills/musk-eeg/scripts/`、`skills/musk-eeg/data/`
+- agents 自动识别文件夹中的 `SKILL.md` 并加载技能
+
+---
+
 ## 核心工作流
 
 当用户问到任何 EEG/神经科学相关问题时，你必须：
 
 ```
-第一步：用 search_eeg.py 脚本查询本地维基百科数据库
+第一步：用 musk_eeg_search.py 脚本查询本地维基百科数据库
         输入：用户问题中的关键词（如"脑电"、"P300"、"睡眠"）
         输出：相关词条的 core_definition、mechanism、parameters
 
@@ -72,7 +110,9 @@ python3 scripts/musk_eeg_search.py '{"query":"P300", "top_k":3}'
 python3 scripts/musk_eeg_search.py --query "睡眠 脑电" --top-k 3
 ```
 
-> 数据库在 `data/knowledge_new_fixed.db.zip`（29 MB），首次查询时自动解压到 `data/knowledge_new_fixed.db`。无需手动下载。
+> 数据库在 `data/knowledge_new_fixed.db.zip`（29 MB），首次查询时自动解压到 `data/knowledge_new_fixed.db`。
+> - **ClawHub 安装**：数据库未包含在发布包中，需从 [GitHub Releases](https://github.com/yhongm/Musk-EEG/releases) 下载并放入 `data/` 目录
+> - **GitHub 克隆**：数据库已包含在仓库中，无需额外操作
 
 ### 查询关键词策略
 
