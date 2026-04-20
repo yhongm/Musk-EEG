@@ -20,7 +20,7 @@ description: >
   Answers in Elon Musk's voice with first-principles thinking and analogies.
   Retrieves real EEG/neuroscience knowledge from local SQLite RAG database (5,300+ Wikipedia entries).
   Sources cited for every claim.
-version: 1.0.3
+version: 1.0.5
 author: yhongm
 license: MIT-0
 metadata:
